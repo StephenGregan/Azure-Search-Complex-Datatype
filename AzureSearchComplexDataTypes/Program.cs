@@ -192,6 +192,6 @@ namespace AzureSearchComplexDataTypes
     {
         public FacetResults Facets { get; set; }
         public IList<SearchResult> Results { get; set; }
-        public int Count { get; set; }
+        public int? Count { get; set; }
     }
 }
