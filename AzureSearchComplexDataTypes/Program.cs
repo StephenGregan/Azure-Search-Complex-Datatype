@@ -14,11 +14,11 @@ namespace AzureSearchComplexDataTypes
 {
     class Program
     {
-        // You can set up in the App.config file using this:
+        // You can set up the search service name and search service api key in the App.config file using this code:
         static string searchServiceNameAppConfig = ConfigurationManager.AppSettings[""];
         static string searchServiceApiKeyAppConfig = ConfigurationManager.AppSettings[""];
 
-        // or you can do it directly as shown below:
+        // or you can also do it directly in the Program class as shown below:
         static string searchServiceName = "[SearchServiceName]";
         static string searchServiceApiKey = "[SearchServiceApiKey]";
         static string indexName = "[IndexName]";
@@ -98,6 +98,7 @@ namespace AzureSearchComplexDataTypes
 
             var definition = new Index()
             {
+                // Index for contacts json file.
                 Name = indexName,
                 Fields = new[]
                 {
@@ -119,9 +120,81 @@ namespace AzureSearchComplexDataTypes
                     new Field("locationsCombined", DataType.Collection(DataType.String))
                     { IsKey = false,  IsSearchable = true, IsFilterable = true, IsSortable = false, IsRetrievable = true, IsFacetable = true }
                 }
+
+            };
+
+            var defintion1 = new Index()
+            {
+               // Index for interpreterIntelligenceContacts json file.
+               Name = indexName,
+               Fields = new[]
+               {
+                        #region interpreterIntelligenceContacts fields.
+                        new Field("id", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("versionValue", DataType.Int32)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("uuid", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("createdBy", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("createdDate", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("lastModifiedBy", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("lastModifiedDate", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("company_id", DataType.Int32)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("name", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("displayName", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("salutation", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("firstName", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("middleName", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("lastName", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("nickName", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("suffix", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("gender_id", DataType.Int32)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("businessUnit_id", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("dateOfBirth", DataType.String)
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false },
+
+                        new Field("contactTypes", DataType.Collection(DataType.String))
+                        { IsKey = true, IsSortable = false, IsSearchable = false, IsRetrievable = true, IsFilterable = false, IsFacetable = false }
+                        #endregion
+                    }
             };
 
             searchServiceClient.Indexes.Create(definition);
+            searchServiceClient.Indexes.Create(definition1);
         }
 
         public static void UploadDocuments()
@@ -143,12 +216,38 @@ namespace AzureSearchComplexDataTypes
                     { "locationsCombined", contact["locations"].Select(item => item["id"] + "||" + item["description"]).ToList() }
                 };
 
+                // Parse the JSON object (interpreterIntelligenceContacts)
+                var doc2 = new Document
+                {
+                    { "id", contact["id"] },
+                    { "versionValue", contact["versionVlaue"] },
+                    { "uuid", contact["uuid"] },
+                    { "createdBy", contact["createdBy"] },
+                    { "createdDate", contact["createdDate"] },
+                    { "lastModifiedBy", contact["lastModifiedBy"] },
+                    { "lastModifiedDate", contact["lastModifiedDate"] },
+                    { "company_id", contact["compnay_id"] },
+                    { "name", contact["name"] },
+                    { "displayName", contact["displayName"] },
+                    { "salutation", contact["salutation"] },
+                    { "firstName", contact["firstName"] },
+                    { "middleName", contact["middleName"] },
+                    { "lastName", contact["lastName"] },
+                    { "nickName", contact["nickName"] },
+                    { "suffix", contact["suffix"] },
+                    { "gender_id", contact["gender_id"] },
+                    { "businessUnit_id", contact["businessUnit_id"] },
+                    { "dateOfBirth", contact["dateOfBirth"] },
+                    { "contactTypes", contact["contactTypes"] }
+                };
+
                 indexOperations.Add(IndexAction.Upload(doc));
+                indexOperations.Add(IndexAction.Upload(doc2));
             }
 
             try
             {
-
+                searchIndexClient.Documents.Index(new IndexBatch(indexOperations));
             }
             catch (IndexBatchException ex)
             {
